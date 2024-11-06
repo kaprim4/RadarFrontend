@@ -1,0 +1,15 @@
+<UserControl x:Class="RadarFrontend.Views.ProcessingView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:RadarFrontend.Views"
+             Height="450" Width="800">
+    <StackPanel Margin="20">
+        <TextBlock Text="Traitement des Données" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
+        <!-- Ajoutez ici les contrôles pour afficher les données traitées -->
+        <DataGrid ItemsSource="{Binding ProcessedData}" AutoGenerateColumns="False" Height="300">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Donnée" Binding="{Binding}" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </StackPanel>
+</UserControl>

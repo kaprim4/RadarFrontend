@@ -1,0 +1,42 @@
+﻿<Window x:Class="RadarFrontend.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:viewModels="clr-namespace:RadarFrontend.ViewModels"
+        xmlns:views="clr-namespace:RadarFrontend.Views"
+        Title="Radar Management System" Height="600" Width="1000">
+    <Window.Resources>
+        <!-- DataTemplate for DashboardViewModel -->
+        <DataTemplate DataType="{x:Type viewModels:DashboardViewModel}">
+            <views:DashboardView />
+        </DataTemplate>
+
+        <!-- DataTemplate for UserManagementViewModel -->
+        <DataTemplate DataType="{x:Type viewModels:UserManagementViewModel}">
+            <views:UserManagementView />
+        </DataTemplate>
+
+        <!-- DataTemplate for DeviceManagementViewModel -->
+        <DataTemplate DataType="{x:Type viewModels:DeviceManagementViewModel}">
+            <views:DeviceManagementView />
+        </DataTemplate>
+
+        <!-- DataTemplate for ProcessingViewModel -->
+        <DataTemplate DataType="{x:Type viewModels:ProcessingViewModel}">
+            <views:ProcessingView />
+        </DataTemplate>
+    </Window.Resources>
+
+    <Grid>
+        <!-- Sidebar for Navigation -->
+        <StackPanel Background="#344D91" Width="200" VerticalAlignment="Stretch" HorizontalAlignment="Left">
+            <TextBlock Text="Radar System" FontSize="20" Foreground="White" Margin="10" HorizontalAlignment="Center"/>
+            <Button Content="Dashboard" Command="{Binding NavigateCommand}" CommandParameter="Dashboard" Background="Transparent" Foreground="White" HorizontalAlignment="Left" Margin="10"/>
+            <Button Content="Users" Command="{Binding NavigateCommand}" CommandParameter="UserManagement" Background="Transparent" Foreground="White" HorizontalAlignment="Left" Margin="10"/>
+            <Button Content="Devices" Command="{Binding NavigateCommand}" CommandParameter="DeviceManagement" Background="Transparent" Foreground="White" HorizontalAlignment="Left" Margin="10"/>
+            <Button Content="Processing" Command="{Binding NavigateCommand}" CommandParameter="Processing" Background="Transparent" Foreground="White" HorizontalAlignment="Left" Margin="10"/>
+        </StackPanel>
+
+        <!-- Main Content Area for Dynamic Views -->
+        <ContentControl Content="{Binding CurrentView}" Margin="200,0,0,0"/>
+    </Grid>
+</Window>

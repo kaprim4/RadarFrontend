@@ -1,0 +1,14 @@
+<UserControl x:Class="RadarFrontend.Views.DeviceManagementView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel Margin="20">
+        <TextBlock Text="Device Management" FontSize="24" FontWeight="Bold"/>
+        <DataGrid ItemsSource="{Binding Devices}" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
+                <DataGridTextColumn Header="Serial Number" Binding="{Binding SerialNumber}" />
+                <DataGridCheckBoxColumn Header="Is Active" Binding="{Binding IsActive}" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </StackPanel>
+</UserControl>
