@@ -1,4 +1,6 @@
-﻿namespace FileProcessor
+﻿using Domain.DTO;
+
+namespace FileProcessor
 {
     public interface IFileProcessor
     {

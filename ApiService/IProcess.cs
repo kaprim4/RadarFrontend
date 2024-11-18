@@ -1,28 +1,38 @@
-﻿using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Text;
+﻿using Domain.DTO;
 using Newtonsoft.Json;
-using ApiService.DTO;
+using System.Net.Http.Headers;
+using System.Text;
 
 namespace ApiService
 {
-    public class IProcess<T>  where T : class
+    public class IProcess<T> : ApiServiceBase where T : class
     {
-        public string _table { get; set; }
-        private readonly string _baseUrl;
-        public IProcess(string table)
+        private readonly string _baseUrl = "http://localhost:5000/api/";
+        private string _controller;
+
+        public IProcess(string controller = "")
         {
-            _table = table;
+            _controller = controller;
         }
 
-        public async Task<ResponseModel> ProcessAsync(T obj, RequestType type, EndPoint endPoint)
+        public IProcess<T> SetController(string controller)
         {
-            ResponseModel output = new(true);
+            _controller = controller;
+            return this;
+        }
+
+        /// <summary>
+        /// Process an API request and deserialize the response into a single object of type T.
+        /// </summary>
+        public async Task<ResponseModel<T>> ProcessAsync(dynamic obj, RequestType type, EndPoint endPoint, bool isAuthorize = false, string token = "")
+        {
+            ResponseModel<T> output = new(true);
             try
             {
-                var response = await ConsumeApiAsync<T>(obj, type, endPoint);
+                var response = await ConsumeApiAsync(obj, type, endPoint, isAuthorize, token);
                 if (response != null)
                 {
-                    return JsonConvert.DeserializeObject<ResponseModel>(response);
+                    return JsonConvert.DeserializeObject<ResponseModel<T>>(response);
                 }
             }
             catch (Exception ex)
@@ -33,16 +43,65 @@ namespace ApiService
             return output;
         }
 
-       
+        
 
+        /// <summary>
+        /// Process an API request and deserialize the response into a list of objects of type T.
+        /// </summary>
+        public async Task<ResponseModel<T>> ProcessListAsync(dynamic requestObj, RequestType type, EndPoint endPoint, bool isAuthorize = false, string token = "")
+        {
+            ResponseModel<T> output = new(true);
+            try
+            {
+                var response = await ConsumeApiAsync(requestObj, type, endPoint, isAuthorize, token);
+                if (response != null)
+                {
+                    return JsonConvert.DeserializeObject<ResponseModel<List<T>>>(response);
+                }
+            }
+            catch (Exception ex)
+            {
+                output.AddErrorMessage(ex.ToString());
+            }
 
-        private static async Task<dynamic> ConsumeApiAsync<T>(T entity, RequestType type, EndPoint endPoint) where T : class
+            return output;
+        }
+
+        /// <summary>
+        /// Authenticate a user and return an authentication response.
+        /// </summary>
+        public async Task<ResponseAuthModel<object>> AuthAsync(dynamic obj)
+        {
+            ResponseAuthModel<object> output = new(true);
+            try
+            {
+                var response = await ConsumeApiAsync(obj, RequestType.Post, EndPoint.Login);
+                if (response != null)
+                {
+                    return JsonConvert.DeserializeObject<ResponseAuthModel<object>>(response);
+                }
+            }
+            catch (Exception ex)
+            {
+                output.AddErrorMessage(ex.ToString());
+            }
+
+            return output;
+        }
+
+        /// <summary>
+        /// Core method for making API requests.
+        /// </summary>
+        private async Task<dynamic> ConsumeApiAsync(dynamic payload, RequestType type, EndPoint endPoint, bool isAuthorize = false, string token = "")
         {
             using HttpClient client = new();
 
-            client.BaseAddress = new Uri("https://yourapiurl.com");
+            if (isAuthorize)
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            client.BaseAddress = new Uri(_baseUrl + _controller + "/");
             string _endPoint = endPoint.ToString();
-            var json = JsonConvert.SerializeObject(entity);
+            string json = payload != null ? JsonConvert.SerializeObject(payload) : string.Empty;
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             try
@@ -56,6 +115,12 @@ namespace ApiService
                     RequestType.Delete => await client.DeleteAsync(_endPoint),
                     _ => throw new NotImplementedException($"Request type {type} is not implemented.")
                 };
+
+                if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    OnUnauthorizedAccessDetected();
+                    return null;
+                }
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -72,25 +137,8 @@ namespace ApiService
                 Console.WriteLine($"Request error: {e.Message}");
             }
 
-            return null; 
+            return null;
         }
-
-    }
-
-    public enum RequestType
-    {
-        Get,
-        Post,
-        Patch,
-        Put,
-        Delete,
-    }
-
-    public enum EndPoint
-    {
-        List,
-        Add,
-        Update,
-        Delete,
     }
 }
+

@@ -5,13 +5,20 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace FileProcessor
+namespace Domain.DTO
 {
+
+    public class TreatmentDTO
+    {
+        public int Id { get; set; }
+        public List<DeploymentData> Deployments { get; set; } = new List<DeploymentData>();
+    }
+
     [XmlRoot("DEPLOYMENTDATA")]
     public class DeploymentData
     {
         [XmlElement("VEHICLEDATA")]
-        public List<VehicleData> VehicleData { get; set; }
+        public List<VehicleData> VehicleDatas { get; set; }
 
         [XmlElement("DEPLOYMENTSUMMARY")]
         public DeploymentSummary DeploymentSummary { get; set; }

@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ApiService\ApiService.csproj" />
     <ProjectReference Include="..\FileProcessor\FileProcessor.csproj" />
   </ItemGroup>
 
