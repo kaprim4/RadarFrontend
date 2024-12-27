@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
 using Domain.DTO;
+using NLog.Filters;
 
 namespace Radar.Repositories
 {
@@ -12,8 +13,9 @@ namespace Radar.Repositories
     {
         Task<ResponseModel<T>> Add(T obj);
         Task<ResponseModel<T>> Edit(T obj);
-        Task<ResponseModel<T>> Remove(int id);
+        Task<ResponseModel<T>> Remove(dynamic id);
         Task<T> GetById(int id);
         Task<ResponseModel<T>> GetAll(PagableDTO<T> obj);
+        Task<ResponseModel<B>> GetAllGenerique<B>(PagableDTO<B> obj) where B : class;
     }
 }

@@ -1,0 +1,271 @@
+﻿<UserControl x:Class="Radar.Views.DocumentDetailView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:icon="http://metro.mahapps.com/winfx/xaml/iconpacks"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Radar.Views"
+      xmlns:utility="clr-namespace:Radar.Utilities"
+      xmlns:vm="clr-namespace:Radar.ViewModels"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800">
+
+    <UserControl.Resources>
+        <utility:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </UserControl.Resources>
+
+    <Border 
+                    Padding="15" Margin="15">
+
+        <Grid x:Name="MainContent" Grid.Column="1" >
+
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+
+            <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" >
+                <Grid Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Stretch"  Margin="10,0,0,0" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0">
+                        <Button Style="{StaticResource addButton}" Command="{Binding ReturnCommand}" Grid.Column="2" Width="43" HorizontalAlignment="Left" Margin="2,9,0,11" >
+                            <StackPanel Orientation="Horizontal" Height="18" Width="11">
+                                <icon:PackIconMaterial Kind="ArrowLeft" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                    <Grid Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock Margin="15 0" FontSize="25">
+                            <Run Text="Document : "></Run>
+                            <Run Text="{Binding CurrentDocument.Reference}"></Run>
+                        </TextBlock>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Border Grid.Row="0" Grid.Column="0" Background="White" BorderBrush="#E0E0E0" BorderThickness="1" Margin="0 15 15 0" CornerRadius="8">
+                        <Grid>
+                            
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Text="Radar" Margin="0 5 0 5" FontSize="20" HorizontalAlignment="Center" />
+                            <Separator Grid.Row="1" Margin="25 0" Background="#FFAFAFAF" Height="0.8"/>
+                            <Grid Grid.Row="2" Margin="10 5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Numéro de série : " Margin="0 5" />
+                                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding CurrentLot.Device.SerialNumber}" Margin="0 5" FontWeight="Bold"/>
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Nom : " Margin="0 5" />
+                                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding CurrentLot.Device.Name}" Margin="0 5" FontWeight="Bold"/>
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Crée le : " Margin="0 5" />
+                                <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding CurrentLot.Device.CreatedDate}" Margin="0 5" FontWeight="Bold"/>
+                            </Grid>
+
+                        </Grid>
+                    </Border>
+                        
+                    <Border Grid.Column="1" Grid.Row="0" Background="White" BorderBrush="#E0E0E0" BorderThickness="1" Margin="0 15 15 0" CornerRadius="8">
+                        <Grid >
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Text="Lot" Margin="0 5 0 5" FontSize="20" HorizontalAlignment="Center" />
+                            <Separator Grid.Row="1" Margin="25 0" Background="#FFAFAFAF" Height="0.8"/>
+                            <Grid Grid.Row="2" Margin="10 5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Réference : " Margin="0 5" />
+                                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding CurrentLot.Reference}" Margin="0 5" FontWeight="Bold"/>
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Nombre de fichiers : " Margin="0 5" />
+                                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding CurrentLot.NbFiles}" Margin="0 5" FontWeight="Bold"/>
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Dérière Modification : " Margin="0 5" />
+                                <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding CurrentLot.UpdatedAt}" Margin="0 5" FontWeight="Bold"/>
+                            </Grid>
+
+                        </Grid>
+                    </Border>
+                    <Border Grid.ColumnSpan="2" Grid.Row="1" Background="Transparent" BorderBrush="#E0E0E0" BorderThickness="1" Margin="0 15 15 0" CornerRadius="8" >
+                        <Rectangle Height="430">
+                            <Rectangle.Fill>
+                                <ImageBrush ImageSource="{Binding CurrentImage}" Stretch="Uniform"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </Border>
+                </Grid>
+                <Grid Grid.Column="1" Margin="0 15 15 0" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <Border Grid.Row="0" Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8">
+                        <Grid >
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Text="Sammary" Margin="0 5 0 5" FontSize="20" HorizontalAlignment="Center" />
+                            <Separator Grid.Row="1" Margin="25 0" Background="#FFAFAFAF" Height="0.8"/>
+                            <Grid Grid.Row="2" Margin="10 5">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0" Margin="0 7">
+                            <Run Text="Nombre de camera : " />
+                            <Run Text="{Binding CurrentDocument.DeploymentSummary.CameraName}" FontWeight="Bold" />
+                                </TextBlock>
+                                <TextBlock Grid.Row="1" Margin="0 7">
+                            <Run Text="Localisation : " />
+                            <Run Text="{Binding CurrentDocument.DeploymentSummary.Location}" FontWeight="Bold" />
+                            <Run Text=" / " />
+                            <Run Text="{Binding CurrentDocument.DeploymentSummary.LocationCode}" FontWeight="Bold" />
+                                </TextBlock>
+                                <TextBlock Grid.Row="2" Margin="0 7">
+                            <Run Text="Vitesse : " />
+                            <Run Text="{Binding CurrentDocument.DeploymentSummary.SpeedLimit}" FontWeight="Bold" />
+                            <Run Text=" " />
+                            <Run Text="{Binding CurrentDocument.DeploymentSummary.MeasurementUnit}" FontWeight="Bold" />
+                                </TextBlock>
+                                <TextBlock Grid.Row="3" Margin="0 7">
+                            <Run Text="Vitesse de capture : " />
+                            <Run Text="{Binding CurrentDocument.DeploymentSummary.CaptureSpeed}" FontWeight="Bold" />
+                            <Run Text=" " />
+                            <Run Text="{Binding CurrentDocument.DeploymentSummary.MeasurementUnit}" FontWeight="Bold" />
+                                </TextBlock>
+                                <TextBlock Grid.Row="4" Margin="0 7 0 7">
+                            <Run Text="Date de création : " />
+                            <Run Text="{Binding CurrentLot.CreateDate}" FontWeight="Bold" />
+                                </TextBlock>
+                            </Grid>
+
+                        </Grid>
+                    </Border>
+                    <Border Grid.Row="1" Background="White" BorderBrush="#E0E0E0" BorderThickness="1" Margin="0 15 0 0" CornerRadius="8" >
+                        <Grid VerticalAlignment="Stretch"  Margin="10,0,0,0" >
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0" Grid.Column="0" Margin="0 7">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0" Text="Radar" Margin="0 5 0 5" FontSize="20" HorizontalAlignment="Center" />
+                                <Separator Grid.Row="1" Margin="25 0" Background="#FFAFAFAF" Height="0.8"/>
+                            </Grid>
+
+
+                            <Grid Grid.Row="1" Grid.Column="0" Margin="0 7">
+                                <TextBlock>
+                                    <Run Text="Sequence :" />
+                                    <Run Text="{Binding CurrentVehicle.Sequence}" FontWeight="Bold" />
+                                </TextBlock>
+                            </Grid>
+                            <Grid Grid.Row="2" Grid.Column="1" Margin="0 7">
+                                <TextBlock>
+                                    <Run Text="Vitesse du Véhicule :" />
+                                    <Run Text="{Binding CurrentVehicle.VehicleSpeed}" FontWeight="Bold" />
+                                </TextBlock>
+                            </Grid>
+
+                            <Grid Grid.Row="3" Grid.Column="0" Margin="0 7">
+                                <TextBlock>
+                                    <Run Text="Horodatage :" />
+                                    <Run Text="{Binding CurrentVehicle.Timestamp}" FontWeight="Bold" />
+                                </TextBlock>
+                            </Grid>
+
+                            <Grid Grid.Row="4" Grid.Column="1" Margin="0 7">
+                                <TextBlock>
+                                    <Run Text="Croix X :" />
+                                    <Run Text="{Binding CurrentVehicle.CrosshairX}" FontWeight="Bold" />
+                                </TextBlock>
+                            </Grid>
+                            <Grid Grid.Row="5" Grid.Column="0" Margin="0 7" >
+                                <TextBlock>
+                                    <Run Text="Croix Y :" />
+                                    <Run Text="{Binding CurrentVehicle.CrosshairY}" FontWeight="Bold" />
+                                </TextBlock>
+                            </Grid>
+
+                        </Grid>
+                    </Border>
+
+                    <Border Grid.Row="2" Background="White" BorderBrush="#E0E0E0" BorderThickness="1" Margin="5 15 5 0" Padding="15 0" CornerRadius="8" >
+                        <Grid Grid.Column="1" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Button Grid.Column="0" Style="{StaticResource addButton}" Command="{Binding PrevCommand}" Width="43" HorizontalAlignment="Left" Margin="2,9,15,11" >
+                                <StackPanel Orientation="Horizontal" Height="18" Width="11">
+                                    <icon:PackIconMaterial Kind="ArrowLeft" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Grid.Column="1" Style="{StaticResource addButton}" Command="{Binding NextCommand}"  Width="43" HorizontalAlignment="Right" Margin="2,9,0,11" >
+                                <StackPanel Orientation="Horizontal" Height="18" Width="11">
+                                    <icon:PackIconMaterial Kind="ArrowRight" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Grid>
+
+        </Grid>
+    </Border>
+
+
+</UserControl>

@@ -1,6 +1,7 @@
 ﻿using Domain.DTO;
 using Radar.Helper;
 using Radar.Repository;
+using Radar.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ using System.Security.Principal;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace Radar.ViewModels
@@ -81,6 +83,18 @@ namespace Radar.ViewModels
             }
         }
 
+        private bool _isLoading;
+
+        public bool IsLoading
+        {
+            get => _isLoading;
+            set
+            {
+                _isLoading = value;
+                OnPropertyChanged(nameof(IsLoading));
+            }
+        }
+
         //-> Commands
         public ICommand LoginCommand { get; }
         public ICommand RecoverPasswordCommand { get; }
@@ -107,22 +121,23 @@ namespace Radar.ViewModels
 
         private async void ExecuteLoginCommand(object obj)
         {
+            IsLoading = true;
             var response = await userRepository.AuthenticateUser(new NetworkCredential(Username, Password));
             if (response.IsAuthentificated)
             {
                 TokenManager.JwtToken = response.Token;
                 IsViewVisible = false;
+
+                
             }
             else
             {
                 ErrorMessage = "* Invalid username or password";
             }
+
+            IsLoading = false;
         }
 
-        private void ExecuteRecoverPassCommand(string username, string email)
-        {
-            throw new NotImplementedException();
-        }
 
 
     }

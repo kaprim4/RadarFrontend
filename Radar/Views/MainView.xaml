@@ -12,15 +12,15 @@
         WindowStyle="None"
         AllowsTransparency="True" Background="Transparent" >
 
-    <Window.DataContext>
+    <!--<Window.DataContext>
         <viewModel:MainViewModel/>
-    </Window.DataContext>
+    </Window.DataContext>-->
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </Window.Resources>
     <!--MouseDown="Border_MouseDown"
         MouseLeftButtonDown="Border_MouseLeftButtonDown"-->
-    <Border CornerRadius="30" Background="#EFF2F7" MouseDown="Border_MouseDown" MouseLeftButtonDown="Border_MouseLeftButtonDown">
+    <Border CornerRadius="30" Background="#FFECECEC" MouseDown="Border_MouseDown" MouseLeftButtonDown="Border_MouseLeftButtonDown">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="200"/>
@@ -34,15 +34,12 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <!--Menu Icon-->
-                <Button Style="{StaticResource topButton}" HorizontalAlignment="Left" Margin="20 28 0 35">
-                    <icon:PackIconMaterial Kind="Menu" Width="15" Height="15" />
-                </Button>
+                
 
-                <Border Grid.Row="1" Background="#623ED0" CornerRadius="0 50 0 30">
+                <Border Grid.Row="1" Background="#623ED0" CornerRadius="0 30 0 30">
                     <DockPanel>
                         <!--Menu Logo-->
-                        <Border Width="80" Height="80" Padding="3" Background="White" CornerRadius="100" DockPanel.Dock="Top" HorizontalAlignment="Left" Margin="20 -30 0 0">
+                        <Border Width="80" Height="80" Padding="3" Background="White" CornerRadius="100" DockPanel.Dock="Top" HorizontalAlignment="Center" Margin="0 30 0 0">
                             <Ellipse>
                                 <Ellipse.Fill>
                                     <ImageBrush ImageSource="pack://application:,,,/Images/user.jpg"/>
@@ -53,8 +50,8 @@
                         </Border>
 
                         <!--Menu Titles-->
-                        <TextBlock Text="Silvers Club" Foreground="White" FontSize="22" FontWeight="SemiBold" DockPanel.Dock="Top" Margin="5 25 0 10" TextAlignment="Center"/>
-                        <TextBlock Text="Members, France" Foreground="#D0BFFF" FontSize="14" FontWeight="SemiBold" DockPanel.Dock="Top" TextAlignment="Center"/>
+                        <TextBlock Text="Slogon" Foreground="White" FontSize="22" FontWeight="SemiBold" DockPanel.Dock="Top" Margin="5 25 0 10" TextAlignment="Center"/>
+                        <TextBlock Text="Slogon, Slogon" Foreground="#D0BFFF" FontSize="14" FontWeight="SemiBold" DockPanel.Dock="Top" TextAlignment="Center"/>
 
                         <!--Menu Seprator-->
                         <Separator Margin="25" Background="#7E5FDC" DockPanel.Dock="Top" Height="0.8"/>
@@ -67,35 +64,61 @@
                                     <TextBlock Text="Dashboard"/>
                                 </StackPanel>
                             </Button>
-                            <Button Style="{StaticResource menuButton}" Command="{Binding ShowMembersCommand}" Tag="Members">
-                                <StackPanel Orientation="Horizontal">
-                                    <icon:PackIconMaterial Kind="AccountMultipleOutline" Style="{StaticResource menuButtonIcon}"/>
-                                    <TextBlock Text="Members"/>
+                            <Separator Margin="25 5" Background="#7E5FDC" DockPanel.Dock="Top" Height="0.8"/>
+                            <Grid Width="200">
+                                <TextBlock Margin="30 10" Text="Opérations" Foreground="#D0BFFF" FontSize="14" FontWeight="SemiBold" TextAlignment="Left"/>
+                                <StackPanel Margin="40 10" Orientation="Vertical">
+                                    <Button Margin="0 20 0 0" Style="{StaticResource menuButton}" Command="{Binding ShowDevicesCommand}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <icon:PackIconMaterial Kind="SlotMachine" Style="{StaticResource menuButtonIcon}"/>
+                                            <TextBlock Text="Devices"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button Margin="0 0" Style="{StaticResource menuButton}" Command="{Binding ShowDataCommand}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <icon:PackIconMaterial Kind="Database" Style="{StaticResource menuButtonIcon}"/>
+                                            <TextBlock Text="Données"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button Margin="0 0" Style="{StaticResource menuButton}" Command="{Binding ShowDevicesCommand}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <icon:PackIconMaterial Kind="Animation" Style="{StaticResource menuButtonIcon}"/>
+                                            <TextBlock Text="Traitement"/>
+                                        </StackPanel>
+                                    </Button>
                                 </StackPanel>
-                            </Button>
 
-                            <!--<Button Style="{StaticResource menuButton}" Command="{Binding ShowEventsCommand}">
-                                <StackPanel Orientation="Horizontal">
-                                    <icon:PackIconMaterial Kind="CalendarClock" Style="{StaticResource menuButtonIcon}"/>
-                                    <TextBlock Text="Events"/>
+                                
+                            </Grid>
+                            <Separator Margin="25 5" Background="#7E5FDC" DockPanel.Dock="Top" Height="0.8"/>
+                            <Grid>
+                                <TextBlock Margin="30 10" Text="Administration" Foreground="#D0BFFF" FontSize="14" FontWeight="SemiBold" TextAlignment="Left"/>
+                                <StackPanel Margin="40 10" Orientation="Vertical">
+                                    <Button Margin="0 20 0 0" Style="{StaticResource menuButton}" Command="{Binding ShowMembersCommand}" Tag="Members">
+                                        <StackPanel Orientation="Horizontal">
+                                            <icon:PackIconMaterial Kind="AccountMultipleOutline" Style="{StaticResource menuButtonIcon}"/>
+                                            <TextBlock Text="Members"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button Margin="0 0" Style="{StaticResource menuButton}" Command="{Binding ShowDevicesCommand}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <icon:PackIconMaterial Kind="TestTube" Style="{StaticResource menuButtonIcon}"/>
+                                            <TextBlock Text="Paramètre"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button Margin="0 0" Style="{StaticResource menuButton}" Command="{Binding ShowDevicesCommand}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <icon:PackIconMaterial Kind="Help" Style="{StaticResource menuButtonIcon}"/>
+                                            <TextBlock Text="Aide"/>
+                                        </StackPanel>
+                                    </Button>
                                 </StackPanel>
-                            </Button>
+
+
+                            </Grid>
+
 
                             
-
-                            <Button Style="{StaticResource menuButton}" Command="{Binding ShowWalletCommand}">
-                                <StackPanel Orientation="Horizontal">
-                                    <icon:PackIconMaterial Kind="CashMultiple" Style="{StaticResource menuButtonIcon}"/>
-                                    <TextBlock Text="Wallet"/>
-                                </StackPanel>
-                            </Button>
-
-                            <Button Style="{StaticResource menuButton}" Command="{Binding ShowMessagesCommand}">
-                                <StackPanel Orientation="Horizontal">
-                                    <icon:PackIconMaterial Kind="ForumOutline" Style="{StaticResource menuButtonIcon}"/>
-                                    <TextBlock Text="Messages"/>
-                                </StackPanel>
-                            </Button>-->
                         </StackPanel>
 
                         <Button Style="{StaticResource menuButton}" VerticalAlignment="Bottom" DockPanel.Dock="Bottom" Margin="15 0 15 20">
@@ -111,12 +134,12 @@
             </Grid>
             <Grid Grid.Column="1">
                 <!--Main Section-->
-                <ContentControl Content="{Binding CurrentView}" 
+                <ContentControl Content="{Binding NavigationService.CurrentView}" 
                     HorizontalAlignment="Stretch" 
                     VerticalAlignment="Stretch" 
                     Visibility="Visible"/>
             </Grid>
-
+            
         </Grid>
     </Border>
 </Window>

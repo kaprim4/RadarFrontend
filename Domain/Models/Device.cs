@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.DTO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,10 @@ namespace Domain.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string SerialNumber { get; set; }
+        public string? CreatedDate { get; set; }
+        public string? BgColor { get; set; }
         public bool IsActive { get; set; }
+
+        public List<Lot>? Lots { get; set; }
     }
 }

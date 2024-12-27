@@ -1,4 +1,5 @@
-﻿using Radar.ViewModels.SubViewModels;
+﻿
+using Radar.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -13,13 +13,9 @@ namespace Radar.Views
     /// </summary>
     public partial class MainView : Window
     {
-       
-
         public MainView()
         {
             
-            DataContext = new MainViewModel();
-
             InitializeComponent();
         }
 
@@ -57,15 +53,4 @@ namespace Radar.Views
         }
     }
 
-
-    public class Member
-    {
-        public string Character { get; set; }
-        public Brush BgColor { get; set; }
-        public string Number { get; set; }
-        public string Name { get; set; }
-        public string Position { get; set; }
-        public string Email { get; set; }
-        public string Phone { get; set; }
-    }
 }

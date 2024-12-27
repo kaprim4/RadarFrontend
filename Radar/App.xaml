@@ -5,28 +5,41 @@
              xmlns:local="clr-namespace:Radar.Utilities"
              xmlns:vm="clr-namespace:Radar.ViewModels"
              xmlns:v="clr-namespace:Radar.Views"
-             xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2"
-             Startup="ApplicationStart">
+             xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2">
     <Application.Resources>
 
-        <local:TagComparerConverter x:Key="TagComparerConverter"/>
+        <!-- Converters -->
+        <local:TagComparerConverter x:Key="TagComparerConverter" />
+        <local:EqualityConverter x:Key="EqualityConverter" />
 
+        <!-- Data Templates -->
         <DataTemplate DataType="{x:Type vm:DashboardViewModel}">
             <v:DashboardView />
         </DataTemplate>
-        <!--<DataTemplate DataType="{x:Type vm:EventsViewModel}">
-            <v:EventsView />
-        </DataTemplate>-->
         <DataTemplate DataType="{x:Type vm:MembersViewModel}">
             <v:MembersView />
         </DataTemplate>
-        <!--<DataTemplate DataType="{x:Type vm:WalletViewModel}">
-            <v:WalletView />
+        <DataTemplate DataType="{x:Type vm:DevicesViewModel}">
+            <v:DevicesView />
         </DataTemplate>
-        <DataTemplate DataType="{x:Type vm:MessagesViewModel}">
-            <v:MessagesView />
-        </DataTemplate>-->
-
+        <DataTemplate DataType="{x:Type vm:AddViewModel}">
+            <v:AddWindow/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:DataViewModel}">
+            <v:DataView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:SingleDataViewModel}">
+            <v:SingleDataView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:DocumentDetailViewModel}">
+            <v:DocumentDetailView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:VehiculeDetailViewModel}">
+            <v:VehiculeDetailView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:AddDataViewModel}">
+            <v:AddDataWindow />
+        </DataTemplate>
 
 
 
@@ -247,23 +260,28 @@
             <Setter Property="FocusVisualStyle" Value="{x:Null}" />
             <Setter Property="Margin" Value="1 0" />
             <Setter Property="FontSize" Value="13" />
-            <Setter Property="Template" >
+            <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border Background="{TemplateBinding Background}" CornerRadius="5" Padding="10 5">
-                            <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 0 0 1"/>
+                            <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 0 0 1" />
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Background" Value="#7950F2" />
                     <Setter Property="Foreground" Value="#ffffff" />
                 </Trigger>
+                <DataTrigger Binding="{Binding DataContext.IsCurrentPage, RelativeSource={RelativeSource AncestorType=ItemsControl}}" Value="True">
+                    <Setter Property="Background" Value="#7950F2" />
+                    <Setter Property="Foreground" Value="#ffffff" />
+                </DataTrigger>
             </Style.Triggers>
         </Style>
+
+
 
 
         <Style x:Key="pagingButtonIcon" TargetType="icon:PackIconMaterial">
@@ -587,5 +605,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+
     </Application.Resources>
 </Application>

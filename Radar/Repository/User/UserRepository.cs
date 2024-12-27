@@ -43,11 +43,16 @@ namespace Radar.Repository
 
         public async Task<ResponseModel<User>> GetAll(PagableDTO<User> pagable)
         {
-            var response = await _processList.ProcessAsync(pagable, RequestType.Post, Domain.DTO.EndPoint.List, true, TokenManager.JwtToken);
+            var response = await _process.ProcessAsync(pagable, RequestType.Post, Domain.DTO.EndPoint.List, true, TokenManager.JwtToken);
             if (response.IsSuccess)
                 return response;
             
             return null; 
+        }
+
+        public Task<ResponseModel<B>> GetAllGenerique<B>(PagableDTO<B> obj) where B : class
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<User> GetById(int id)
@@ -56,7 +61,7 @@ namespace Radar.Repository
         }
         
 
-        public async Task<ResponseModel<User>> Remove(int id)
+        public async Task<ResponseModel<User>> Remove(dynamic id)
         {
             throw new NotImplementedException();
         }

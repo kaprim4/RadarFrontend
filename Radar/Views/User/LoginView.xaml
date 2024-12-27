@@ -216,8 +216,20 @@
                                     <Trigger Property="IsMouseOver" Value="True">
                                         <Setter Property="Background" Value="#28AEED"/>
                                     </Trigger>
+                                    <DataTrigger Binding="{Binding IsLoading}" Value="True">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <ProgressBar IsIndeterminate="True" Width="20" Height="20" Margin="0,0,5,0" />
+                                                    <TextBlock Text="Loading..." VerticalAlignment="Center" />
+                                                </StackPanel>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
                                 </Style.Triggers>
                             </Style>
+
+                            
                         </Button.Style>
 
                         <Button.Template>
@@ -229,10 +241,11 @@
                                                       HorizontalAlignment="Center"/>
                                 </Border>
                             </ControlTemplate>
+
                         </Button.Template>
                     </Button>
 
-                    <StackPanel Orientation="Horizontal"
+                    <!--<StackPanel Orientation="Horizontal"
                                 HorizontalAlignment="Center"
                                 Margin="0,15,0,0">
 
@@ -250,7 +263,7 @@
                                Cursor="Hand"
                                Margin="8,0,0,0"/>
 
-                    </StackPanel>
+                    </StackPanel>-->
 
                 </StackPanel>
 

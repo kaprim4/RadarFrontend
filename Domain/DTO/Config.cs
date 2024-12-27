@@ -14,6 +14,7 @@ namespace Domain.DTO
         Patch,
         Put,
         Delete,
+        GetById
     }
 
     public enum EndPoint
@@ -23,6 +24,10 @@ namespace Domain.DTO
         Update,
         Delete,
         Login,
-        register
+        register,
+        GetById,
+        checkfiles,
+        adddocument,
+        deletedocument
     }
 }

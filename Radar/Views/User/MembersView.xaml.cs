@@ -22,25 +22,18 @@ namespace Radar.Views
     /// </summary>
     public partial class MembersView : UserControl
     {
-        public ICommand SelectionChangedCommand { get; private set; }
-
-
         public MembersView()
         {
             InitializeComponent(); 
-            DataContext = new MembersViewModel();
-            var converter = new BrushConverter();
-            //ObservableCollection<Member> members = new ObservableCollection<Member>();
-
-            //members.Add(new Member { Number = "1", Character = "J", BgColor = (Brush)converter.ConvertFromString("#1098AD"), Name = "John Doe", Position = "Coach", Email = "john.doe@gmail.com", Phone = "415-954-1475" });
-
-            //membersDataGrid.ItemsSource = members;
         }
 
-
-        private void membersDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void TextBoxFilter_KeyDown(object sender, KeyEventArgs e)
         {
-            
+            if (e.Key == Key.Enter)
+            {
+                if (DataContext is MembersViewModel viewModel)
+                    viewModel.SearchFilter();
+            }
         }
     }
 }

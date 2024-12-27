@@ -1,5 +1,6 @@
 ﻿using Domain.Models;
 using Radar.Repository;
+using Radar.Service;
 using Radar.Views;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,16 @@ namespace Radar.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
+        private INavigationService _navigationService;
+        public INavigationService NavigationService
+        {
+            get => _navigationService;
+            set
+            {
+                _navigationService = value;
+                OnPropertyChanged(nameof(NavigationService));
+            }
+        }
 
         private string _selectedView;
         public string SelectedView
@@ -27,32 +38,48 @@ namespace Radar.ViewModels
                 OnPropertyChanged(nameof(SelectedView));
             }
         }
-        private object _currentView;
-        public object CurrentView
-        {
-            get => _currentView;
-            set
-            {
-                _currentView = value;
-                OnPropertyChanged();
-            }
-        }
+        //private object _currentView;
+        //public object CurrentView
+        //{
+        //    get => _currentView;
+        //    set
+        //    {
+        //        _currentView = value;
+        //        OnPropertyChanged();
+        //    }
+        //}
+
+        public bool IsRadaWindowVisible { get; set; }
         public ICommand ShowDashboardCommand { get; }
-        public ICommand ShowEventsCommand { get; }
+        public ICommand ShowDevicesCommand { get; }
         public ICommand ShowMembersCommand { get; }
+
+        public ICommand ShowDataCommand { get; }
         public ICommand ShowWalletCommand { get; }
         public ICommand ShowMessagesCommand { get; }
 
-        private void Dashboard(object obj)
-        {
-            CurrentView = new DashboardView();
-            SelectedView = "Dashboard";
-        }
-        private void Members(object obj)
-        {
-            CurrentView = new MembersView();
-            SelectedView = "Members";
-        }
+        //private void Dashboard(object obj)
+        //{
+        //    CurrentView = new DashboardView();
+        //    SelectedView = "Dashboard";
+        //}
+        //private void Members(object obj)
+        //{
+        //    CurrentView = new MembersView();
+        //    SelectedView = "Members";
+        //}
+
+        //private void Data(object obj)
+        //{
+        //    CurrentView = new DataView();
+        //    SelectedView = "Data";
+        //}
+
+        //private void Devices(object obj)
+        //{
+        //    CurrentView = new DevicesView();
+        //    SelectedView = "Devices";
+        //}
         //Fields
         private User _currentUserAccount;
         private IUserRepository userRepository;
@@ -72,23 +99,33 @@ namespace Radar.ViewModels
             }
         }
 
-        public MainViewModel()
+        public MainViewModel(INavigationService navigationService)
         {
+            NavigationService = navigationService;
             // Set up commands
-            ShowDashboardCommand = new ViewModelCommand(Dashboard);
-            ShowMembersCommand = new ViewModelCommand(Members);
-
+            ShowDashboardCommand = new ViewModelCommand(o => { NavigationService.NavigateTo<DashboardViewModel>(); }, o=> true);
+            ShowMembersCommand = new ViewModelCommand(o => { NavigationService.NavigateTo<MembersViewModel>(); }, o => true);
+            ShowDevicesCommand = new ViewModelCommand(o => { NavigationService.NavigateTo<DevicesViewModel>(); }, o => true);
+            ShowDataCommand = new ViewModelCommand(o => { NavigationService.NavigateTo<DataViewModel>(); }, o => true);
+            
+            //ShowMembersCommand = new ViewModelCommand(Members);
+            //ShowDevicesCommand = new ViewModelCommand(Devices);
+            //ShowDataCommand = new ViewModelCommand(Data);
             userRepository = new UserRepository();
             CurrentUserAccount = new User();
             LoadCurrentUserData();
 
 
-           
-            //ShowWalletCommand = new ViewModelCommand(_ => CurrentView = walletViewModel);
+
+
             //ShowMessagesCommand = new ViewModelCommand(_ => CurrentView = messagesViewModel);
 
+          
+                //CurrentView = new DashboardView();
 
-            CurrentView = new DashboardView();
+            Task.Run(() => ShowRadarView());
+
+            
         }
 
 
@@ -133,5 +170,21 @@ namespace Radar.ViewModels
                 }
             }
         }
+
+        public async void ShowRadarView()
+        {
+            //while (true)
+            //{
+            //    if (IsRadaWindowVisible)
+            //    {
+            //            var RadarFetchWindow = new RadarFetchWindow();
+            //            RadarFetchWindow.ShowDialog();
+            //        IsRadaWindowVisible = false;
+            //    }
+            //    Thread.Sleep(500);
+            //}
+        }
+
+        
     }
 }
