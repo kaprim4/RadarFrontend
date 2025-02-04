@@ -26,6 +26,17 @@ namespace Domain.DTO
         [XmlElement("DEPLOYMENTSUMMARY")]
         public DeploymentSummary DeploymentSummary { get; set; }
     }
+    
+    [XmlRoot("DEPLOYMENTDATA")]
+    public class DeploymentDataForXM
+    {
+        [XmlElement("VEHICLEDATA")]
+        public List<VehicleDataForXML> VehicleDatas { get; set; }
+        //public List<IFormFile> Images { get; set; }
+
+        [XmlElement("DEPLOYMENTSUMMARY")]
+        public DeploymentSummary DeploymentSummary { get; set; }
+    }
 
     //public class VehicleData
     //{
@@ -61,15 +72,64 @@ namespace Domain.DTO
     public class VehicleData
     {
         public int Id { get; set; }
-        public long Sequence { get; set; }
-        public int VehicleSpeed { get; set; }
-        public string Timestamp { get; set; }
-        public string Image { get; set; }
         public IFormFile? ImageFile { get; set; }
+
+        [XmlElement("SEQUENCE")]
+        public long Sequence { get; set; }
+
+        [XmlElement("VEHICLESPEED")]
+        public int VehicleSpeed { get; set; }
+
+        [XmlElement("TIMESTAMP")]
+        public string Timestamp { get; set; }
+
+        [XmlElement("IMAGE")]
+        public string Image { get; set; }
+
+        [XmlElement("VIDEO")]
         public string Video { get; set; }
+
+        [XmlElement("JMX")]
         public string Jmx { get; set; }
+
+        [XmlElement("TXT")]
         public string Txt { get; set; }
+
+        [XmlElement("CROSSHAIRX")]
         public int CrosshairX { get; set; }
+
+        [XmlElement("CROSSHAIRY")]
+        public int CrosshairY { get; set; }
+    }
+
+    public class VehicleDataForXML
+    {
+
+        [XmlElement("SEQUENCE")]
+        public long Sequence { get; set; }
+
+        [XmlElement("VEHICLESPEED")]
+        public int VehicleSpeed { get; set; }
+
+        [XmlElement("TIMESTAMP")]
+        public string Timestamp { get; set; }
+
+        [XmlElement("IMAGE")]
+        public string Image { get; set; }
+
+        [XmlElement("VIDEO")]
+        public string Video { get; set; }
+
+        [XmlElement("JMX")]
+        public string Jmx { get; set; }
+
+        [XmlElement("TXT")]
+        public string Txt { get; set; }
+
+        [XmlElement("CROSSHAIRX")]
+        public int CrosshairX { get; set; }
+
+        [XmlElement("CROSSHAIRY")]
         public int CrosshairY { get; set; }
     }
 

@@ -166,7 +166,7 @@ namespace Radar.ViewModels
                         continue;
                     }
 
-                    var jmx = await Task.Run(() => JmxProcessor.DoWork(new string[] { item }));
+                    var jmx = await Task.Run(() => JmxProcessor.DoWork(new string[] { item }, ""));
                     var newDocument = jmx
                         .Select(x => new JMX
                         {

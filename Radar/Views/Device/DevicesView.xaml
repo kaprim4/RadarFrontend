@@ -80,7 +80,7 @@
                         <DataGridTextColumn Header="#" IsReadOnly="True" CanUserResize="False" Width="auto" Binding="{Binding Id}"/>
                         <DataGridTextColumn Header="Name" IsReadOnly="True" CanUserResize="False" Width="auto" Binding="{Binding Name}"/>
                         <DataGridTextColumn Header="SerialNumber" Binding="{Binding SerialNumber}" IsReadOnly="True" Width="auto"/>
-                        <DataGridTemplateColumn Header="Member" IsReadOnly="True" Width="*">
+                        <DataGridTemplateColumn Header="Statue" IsReadOnly="True" Width="*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">

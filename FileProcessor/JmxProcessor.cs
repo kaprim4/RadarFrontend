@@ -9,6 +9,7 @@ using Domain.DTO;
 using System.Reflection.Metadata;
 using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.AspNetCore.Http;
+using System.Text.Json.Serialization;
 
 namespace FileProcessor
 {
@@ -18,8 +19,9 @@ namespace FileProcessor
         public static int TotalFile = 0;
         public static int Ok = 0;
         public static int Percentage = 0;
-        public static List<DeploymentData> DoWork(string[] args)
+        public static async Task<List<DeploymentData>> DoWork(string[] args, string outpuDirectory)
         {
+            OutPutDirectory = outpuDirectory;
             List<DeploymentData> output = new();
             TotalFile = args.Length;
             foreach (var item in args)
@@ -31,7 +33,7 @@ namespace FileProcessor
                 {
 
                     // Extract frames and populate VehicleData list
-                    var vehicleDataList = new List<VehicleData>();
+                    var vehicleDataList = new List<VehicleDataForXML>();
                     var imagesList = new List<IFormFile>();
                     byte[] imgbuf = new byte[3686400];  // Buffer for image data
                     BITMAPINFO bmiImage = new BITMAPINFO();
@@ -45,18 +47,23 @@ namespace FileProcessor
                             long sequance = GenerateUniqueSequence(DateTime.Now, frameCounter);
                             string imageName = $"{sequance}_{DateTime.Now:ddMMyyyyHHmmssfff}.bmp";
                             // Save image for each frame
-                            string imagePath = Path.Combine(Environment.CurrentDirectory, "Images", Path.GetFileName(item), imageName);
-                            Task.Run(()=>SaveBmpImage(imagePath, bmiImage, imgbuf));
+                            string imagePath = Path.Combine(OutPutDirectory, Path.GetFileNameWithoutExtension(item));
+                            if (!Directory.Exists(imagePath))
+                            {
+                                Directory.CreateDirectory(imagePath);
+                            }
+                            Task.Run(()=> SaveBmpImage(Path.Combine(imagePath, imageName), bmiImage, imgbuf));
+
 
 
                             // Populate VehicleData for each frame
-                            var vehicleData = new VehicleData
+                            var vehicleData = new VehicleDataForXML
                             {
                                 Sequence = sequance,
                                 VehicleSpeed = int.Parse(userdata.MeasuredSpeed),
                                 Timestamp = frameTimestamp,
-                                Image = imageName,
-                                ImageFile = ConvertBytesToIFormFile(imgbuf, imagePath, "image/bmp", imageName),
+                                Image = Path.Combine(imagePath, imageName),
+                                //ImageFile = ConvertBytesToIFormFile(imgbuf, imagePath, "image/bmp", imageName),
                                 Video = "",
                                 Jmx = Path.GetFileName(fileName),
                                 Txt = "",
@@ -74,7 +81,7 @@ namespace FileProcessor
                     }
 
                     // Create the XML file using the DTOs
-                    output.Add(CreateXml(userdata, vehicleDataList, imagesList));
+                    output.Add(CreateXml(userdata, vehicleDataList, imagesList, Path.GetFileNameWithoutExtension(item)));
                 }
                 else
                 {
@@ -123,7 +130,7 @@ namespace FileProcessor
         }
 
         // Create the XML using the DTOs
-        private static DeploymentData CreateXml( textdataW userdata, List<VehicleData> vehicleDataList, List<IFormFile> Images)
+        private static DeploymentData CreateXml(textdataW userdata, List<VehicleDataForXML> vehicleDataList, List<IFormFile> Images, string fileName)
         {
             // Populate DeploymentSummary
             var deploymentSummary = new DeploymentSummary
@@ -143,21 +150,36 @@ namespace FileProcessor
                 EndDtm = DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss") // Example end time
             };
 
-            // Create DeploymentData object
-            return  new DeploymentData
+            var deploymentData = new DeploymentDataForXM
             {
                 VehicleDatas = vehicleDataList,
-                DeploymentSummary = deploymentSummary,
-                Images = Images
+                DeploymentSummary = deploymentSummary
             };
 
-            // Serialize to XML
-            //string xmlFilePath = Path.Combine(outputFolder, "Output.xml");
-            //using (var fileStream = new FileStream(xmlFilePath, FileMode.Create))
-            //{
-            //    var serializer = new System.Xml.Serialization.XmlSerializer(typeof(DeploymentData));
-            //    serializer.Serialize(fileStream, deploymentData);
-            //}
+            //Serialize to XML
+            string xmlFilePath = Path.Combine(OutPutDirectory, fileName, fileName + ".xml");
+            using (var fileStream = new FileStream(xmlFilePath, FileMode.Create))
+            {
+                var serializer = new System.Xml.Serialization.XmlSerializer(typeof(DeploymentDataForXM));
+                serializer.Serialize(fileStream, deploymentData);
+            }
+
+            return new DeploymentData()
+            {
+                VehicleDatas = vehicleDataList.Select(x=> new VehicleData()
+                {
+                    CrosshairX = x.CrosshairX,
+                    CrosshairY = x.CrosshairY,
+                    Image = x.Image,
+                    Jmx = x.Jmx,
+                    Sequence = x.Sequence,
+                    Timestamp = x.Timestamp,
+                    Txt = x.Txt,
+                    VehicleSpeed = x.VehicleSpeed,
+                    Video = x.Video
+                }).ToList(),
+                DeploymentSummary = deploymentSummary
+            };
         }
 
         private static long GenerateUniqueSequence(DateTime baseTime, int frameIndex)

@@ -110,7 +110,8 @@ namespace Radar.ViewModels
 
             CurrentDocument.VehicleDatas =  CurrentDocument.VehicleDatas.OrderBy(x => x.Id).ToList();
             CurrentVehicle = CurrentDocument.VehicleDatas.FirstOrDefault();
-            CurrentImage = Path.Combine(Environment.CurrentDirectory, "Images", Path.GetFileName(CurrentVehicle.Jmx), CurrentVehicle.Image);
+            CurrentImage = CurrentVehicle.Image;
+            //CurrentImage = Path.Combine(Environment.CurrentDirectory, "Images", Path.GetFileName(CurrentVehicle.Jmx), CurrentVehicle.Image);
         }
 
 
@@ -130,7 +131,8 @@ namespace Radar.ViewModels
                 var index = CurrentDocument.VehicleDatas.IndexOf(CurrentVehicle);
 
                 CurrentVehicle = index > 0 ? CurrentDocument.VehicleDatas[index - 1] : CurrentDocument.VehicleDatas[CurrentDocument.VehicleDatas.Count - 1];
-                CurrentImage = Path.Combine(Environment.CurrentDirectory, "Images", Path.GetFileName(CurrentVehicle.Jmx), CurrentVehicle.Image);
+                CurrentImage = CurrentVehicle.Image;
+                //CurrentImage = Path.Combine(Environment.CurrentDirectory, "Images", Path.GetFileName(CurrentVehicle.Jmx), CurrentVehicle.Image);
             }
             else
             {
@@ -144,7 +146,8 @@ namespace Radar.ViewModels
                 var index = CurrentDocument.VehicleDatas.IndexOf(CurrentVehicle);
 
                 CurrentVehicle = index < CurrentDocument.VehicleDatas.Count - 1 ? CurrentDocument.VehicleDatas[index + 1] : CurrentDocument.VehicleDatas[0];
-                CurrentImage = Path.Combine(Environment.CurrentDirectory, "Images", Path.GetFileName(CurrentVehicle.Jmx), CurrentVehicle.Image);
+                CurrentImage = CurrentVehicle.Image;
+                //CurrentImage = Path.Combine(Environment.CurrentDirectory, "Images", Path.GetFileName(CurrentVehicle.Jmx), CurrentVehicle.Image);
             }
             else
             {

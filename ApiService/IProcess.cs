@@ -8,12 +8,16 @@ namespace ApiService
 {
     public class IProcess<T> : ApiServiceBase where T : class
     {
-        private readonly string _baseUrl = "http://localhost:5000/api/";
+        public static string _baseUrl = "http://localhost:5000/api/";
         private string _controller;
 
-        public IProcess(string controller = "")
+        public IProcess(string controller = "", string api = "")
         {
             _controller = controller;
+            if (!string.IsNullOrEmpty(api))
+            {
+                _baseUrl = api;
+            }
         }
 
         public IProcess<T> SetController(string controller)
