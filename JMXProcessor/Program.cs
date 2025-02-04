@@ -1,4 +1,4 @@
-﻿
+
 using ApiService;
 using Domain.DTO;
 using FileProcessor;
@@ -44,32 +44,28 @@ internal class Program
             LogManager.Configuration = logConfig;
             LogManager.ReconfigExistingLoggers();
         }
-
-
-        log.Info($"chemin d'input : {InputDirectory}");
-        log.Info($"chemin de sortie : {OutputDirectory}");
-        log.Info($"chemin de fichier JMX traité : {TreatedDirectory}");
-        log.Info($"chemin de fichier JMX rejté : {RejectedDirectory}");
-        log.Info($"chemin de fichier Logs : {LogDirectory}");
+        log.Info($"[PARAM] | INPUT PATH: {InputDirectory}");
+        log.Info($"[PARAM] | OUTPUT PATH: {OutputDirectory}");
+        log.Info($"[PARAM] | TREATED PATH: {TreatedDirectory}");
+        log.Info($"[PARAM] | REJECTED PATH: {RejectedDirectory}");
+        log.Info($"[PARAM] | LOG PATH: {LogDirectory}");
         if (!string.IsNullOrWhiteSpace(InputDirectory) && !string.IsNullOrWhiteSpace(OutputDirectory))
         {
-            log.Info("Start the application");
+            log.Info("[RUN] | Application starts...");
             DoWork();
             Console.ReadLine();
         }
-       
     }
 
     public static async void DoWork()
     {
         while (true)
         {
-            log.Info("lencement de recherche ");
-
+            log.Info("[SEARCH] | Scan startup");
             var files = Directory.GetFiles(InputDirectory, "*.jmx").Take(4).ToList();
             if (files != null && files.Any())
             {
-                log.Info("des fichier sont détecter : " + string.Join(", ", files));
+                log.Info("[SEARCH] | File(s) detected: " + string.Join(", ", files));
                 foreach (var file in files)
                 {
                     //Task.Run(() => ProcessFile(file)).ContinueWith(task =>
@@ -79,12 +75,10 @@ internal class Program
                     await ProcessFile(file);
                 }
             }
-            else
-            {
-                log.Info("pas de fichier jmx dans le dossier input");
+            else{
+                log.Info("[SEARCH] | Any File was detected");
             }
-
-            Thread.Sleep(1000);
+            Thread.Sleep(3000);
         }
     }
 
@@ -99,8 +93,8 @@ internal class Program
             {
                 if (!response.FirstOrDefault().CanTreat)
                 {
-                    log.Warn($"le fichier  : {Path.GetFileName(file)} est déjà traiter !!");
-                    log.Info($"déplacement de fichier : {Path.GetFileName(file)} dans le répertoire Rejet");
+                    log.Warn($"[PROCESS] | The file {Path.GetFileName(file)} is already  treated.");
+                    log.Info($"[PROCESS] | The file {Path.GetFileName(file)} was moved to 'REJECTED FOLDER'");
                     //Task.Run(() => Move(file, true)).ContinueWith(task =>
                     //{
                     //    task.Dispose();
@@ -109,11 +103,11 @@ internal class Program
                 }
                 else
                 {
-                    log.Info("debut de traitement pour le fichier  : " + Path.GetFileName(file));
+                    log.Info("[PROCESS] | Start moving the file: " + Path.GetFileName(file));
                     try
                     {
                         var jmx = await JmxProcessor.DoWork(new string[] { file }, OutputDirectory);
-                        log.Info("Image et fichier XML sont exporter avec succée pour le fichier : " + Path.GetFileName(file));
+                        log.Info($"[PROCESS] | Images and XML file for {Path.GetFileName(file)} has been exported successfully.");
                         var lot = new Lot
                         {
                             Reference = "",
@@ -135,8 +129,8 @@ internal class Program
                         IProcess<Lot> _process = new("data", APIUrl);
                         
                         await _process.ProcessAsync(lot, RequestType.Post, EndPoint.Add, false);
-                        log.Info("Historique envoyer pour le fichier  : " + Path.GetFileName(file));
-                        log.Info($"déplacement de fichier : {Path.GetFileName(file)} dans le répertoire Traité");
+                        log.Info($"[API] | The data of {Path.GetFileName(file)} was sent to database.");
+                        log.Info($"[PROCESS] | The file {Path.GetFileName(file)} was moved to 'TREATED FOLDER'");
                         //Task.Run(() => Move(file, false)).ContinueWith(task =>
                         //{
                         //    task.Dispose();
@@ -147,20 +141,17 @@ internal class Program
                     {
                         log.Error(ex.ToString());
                     }
-
                 }
             }
             else
             {
-                log.Info("pas de reponse depuis le serveur ");
+                log.Error("[API] | The API server is unreachable.");
             }
-
         }
         catch (Exception ex)
         {
             log.Error(ex.ToString());
         }
-        
     }
 
 
