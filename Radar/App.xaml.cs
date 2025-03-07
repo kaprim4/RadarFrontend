@@ -26,6 +26,7 @@ namespace Radar
 
         public App()
         {
+
             IServiceCollection services = new ServiceCollection();
 
             services.AddTransient<LoginViewModel>();
@@ -88,12 +89,23 @@ namespace Radar
                 DataContext = provider.GetRequiredService<VehiculeDetailViewModel>()
             });
 
+            services.AddTransient<SettingViewModel>();
+            services.AddTransient(provider => new SettingView()
+            {
+                DataContext = provider.GetRequiredService<SettingViewModel>()
+            });
+
             services.AddSingleton<INavigationService, NavigationService>();
+            services.AddSingleton<IStateService, StateService>();
             services.AddSingleton<Func<Type, ViewModelBase>>(serviceProvider=> viewModelType=> (ViewModelBase)serviceProvider.GetRequiredService(viewModelType));
+
+            services.AddSingleton<ISettingNavigationService, SettingNavigationService>();
 
             _serviceProvider = services.BuildServiceProvider();
 
         }
+
+
 
         protected override void OnStartup(StartupEventArgs e)
         {

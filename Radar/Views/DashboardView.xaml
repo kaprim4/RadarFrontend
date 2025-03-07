@@ -4,18 +4,202 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Radar.Views"
-      mc:Ignorable="d" 
-    xmlns:icon="http://metro.mahapps.com/winfx/xaml/iconpacks"
+      xmlns:icon="http://metro.mahapps.com/winfx/xaml/iconpacks"
       xmlns:vm="clr-namespace:Radar.ViewModels"
-      d:DesignHeight="450" d:DesignWidth="800" 
-             >
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800">
 
-    <Grid >
-        <Button Style="{StaticResource addButton}" Command="{Binding OpenRadarFetchCommand}">
-            <StackPanel Orientation="Horizontal">
-                <icon:PackIconMaterial Kind="Plus" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
-                <TextBlock Text="Add New Member"/>
-            </StackPanel>
-        </Button>
-    </Grid>
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+
+        <Style x:Key="StatusCardStyle" TargetType="Border">
+            <Setter Property="Background" Value="#FF2D2D30"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="15"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+
+        <Style x:Key="StatusTextStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="HeaderStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Margin" Value="0,0,0,10"/>
+        </Style>
+
+        <Style x:Key="ActionButtonStyle" TargetType="Button">
+            <Setter Property="Padding" Value="15,8"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Background" Value="#FF0078D4"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                            VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FF106EBE"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+    <Border CornerRadius="8" Background="White" BorderBrush="#E0E0E0" BorderThickness="1" 
+            Padding="15" Margin="10">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header with IIS Status and Refresh Button -->
+            <Border Style="{StaticResource StatusCardStyle}"
+                    Grid.Row="0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="IIS Server Status"
+                                 Style="{StaticResource HeaderStyle}"/>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Current Status: "
+                                     Style="{StaticResource StatusTextStyle}"/>
+                            <TextBlock Text="{Binding IISStatus}"
+                                     Style="{StaticResource StatusTextStyle}"
+                                     Margin="5,0,0,0"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" 
+                              Orientation="Horizontal"
+                              VerticalAlignment="Center">
+                        <Button Content="Refresh"
+                                Command="{Binding RefreshCommand}"
+                                Style="{StaticResource ActionButtonStyle}"/>
+                        <Button Content="Restart IIS"
+                                Command="{Binding RestartIISCommand}"
+                                Style="{StaticResource ActionButtonStyle}"
+                                Background="#FFc50f1f"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Header with IIS Status and Refresh Button -->
+            <Border Style="{StaticResource StatusCardStyle}"
+                    Grid.Row="1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="Service Status"
+                                 Style="{StaticResource HeaderStyle}"/>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Current Status: "
+                                     Style="{StaticResource StatusTextStyle}"/>
+                            <TextBlock Text="{Binding ServiceStatus}"
+                                     Style="{StaticResource StatusTextStyle}"
+                                     Margin="5,0,0,0"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" 
+                              Orientation="Horizontal"
+                              VerticalAlignment="Center">
+                        <Button Content="Refresh"
+                                Command="{Binding RefreshServiceCommand}"
+                                Style="{StaticResource ActionButtonStyle}"/>
+                        <Button Content="Restart IIS"
+                                Command="{Binding RestartServiceCommand}"
+                                Style="{StaticResource ActionButtonStyle}"
+                                Background="#FFc50f1f"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- App Pools List -->
+            <ScrollViewer Grid.Row="2" 
+                         VerticalScrollBarVisibility="Auto"
+                         Margin="0,10,0,0">
+                <ItemsControl ItemsSource="{Binding AppPools}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Style="{StaticResource StatusCardStyle}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="{Binding Name}"
+                                                 Style="{StaticResource HeaderStyle}"/>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="Status: "
+                                                     Style="{StaticResource StatusTextStyle}"/>
+                                            <TextBlock Text="{Binding Status}"
+                                                     Style="{StaticResource StatusTextStyle}"/>
+                                        </StackPanel>
+                                        <TextBlock Style="{StaticResource StatusTextStyle}"
+                                                 FontSize="12"
+                                                 Opacity="0.7">
+                                            <Run Text="Last checked: "/>
+                                            <Run Text="{Binding LastChecked, StringFormat='{}{0:HH:mm:ss}'}"/>
+                                        </TextBlock>
+                                    </StackPanel>
+
+                                    <Button Grid.Column="2"
+                                            Content="Restart"
+                                            Command="{Binding DataContext.RestartAppPoolCommand, 
+                                                      RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                            CommandParameter="{Binding Name}"
+                                            Style="{StaticResource ActionButtonStyle}"
+                                            Background="#FFc50f1f"/>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <!-- Loading Overlay -->
+            <Grid Grid.RowSpan="2"
+                  Background="#80000000"
+                  Visibility="{Binding IsRefreshing, Converter={StaticResource BoolToVis}}">
+                <StackPanel HorizontalAlignment="Center" 
+                           VerticalAlignment="Center">
+                    <TextBlock Text="Refreshing..."
+                             Foreground="White"
+                             FontSize="16"
+                             HorizontalAlignment="Center"/>
+                    <ProgressBar IsIndeterminate="True"
+                               Width="200"
+                               Height="2"
+                               Margin="0,10,0,0"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Border>
 </UserControl>

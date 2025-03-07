@@ -40,6 +40,12 @@
         <DataTemplate DataType="{x:Type vm:AddDataViewModel}">
             <v:AddDataWindow />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:SettingViewModel}">
+            <v:SettingView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:PathViewModel}">
+            <v:PathView />
+        </DataTemplate>
 
 
 

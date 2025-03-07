@@ -47,7 +47,7 @@ namespace FileProcessor
                             long sequance = GenerateUniqueSequence(DateTime.Now, frameCounter);
                             string imageName = $"{sequance}_{DateTime.Now:ddMMyyyyHHmmssfff}.bmp";
                             // Save image for each frame
-                            string imagePath = Path.Combine(OutPutDirectory, Path.GetFileNameWithoutExtension(item));
+                            string imagePath = Path.Combine(OutPutDirectory, userdata.SerialNo, Path.GetFileNameWithoutExtension(item));
                             if (!Directory.Exists(imagePath))
                             {
                                 Directory.CreateDirectory(imagePath);
@@ -157,7 +157,11 @@ namespace FileProcessor
             };
 
             //Serialize to XML
-            string xmlFilePath = Path.Combine(OutPutDirectory, fileName, fileName + ".xml");
+            string xmlFilePath = Path.Combine(OutPutDirectory, userdata.SerialNo, fileName, fileName + ".xml");
+            if (!Directory.Exists(Path.Combine(OutPutDirectory, userdata.SerialNo, fileName)))
+            {
+                Directory.CreateDirectory(Path.Combine(OutPutDirectory, userdata.SerialNo, fileName));
+            }
             using (var fileStream = new FileStream(xmlFilePath, FileMode.Create))
             {
                 var serializer = new System.Xml.Serialization.XmlSerializer(typeof(DeploymentDataForXM));

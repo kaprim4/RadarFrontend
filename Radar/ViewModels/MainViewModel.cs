@@ -57,6 +57,7 @@ namespace Radar.ViewModels
         public ICommand ShowDataCommand { get; }
         public ICommand ShowWalletCommand { get; }
         public ICommand ShowMessagesCommand { get; }
+        public ICommand ShowSettingCommand { get; }
 
         //private void Dashboard(object obj)
         //{
@@ -107,6 +108,7 @@ namespace Radar.ViewModels
             ShowMembersCommand = new ViewModelCommand(o => { NavigationService.NavigateTo<MembersViewModel>(); }, o => true);
             ShowDevicesCommand = new ViewModelCommand(o => { NavigationService.NavigateTo<DevicesViewModel>(); }, o => true);
             ShowDataCommand = new ViewModelCommand(o => { NavigationService.NavigateTo<DataViewModel>(); }, o => true);
+            ShowSettingCommand = new ViewModelCommand(o => { NavigationService.NavigateTo<SettingViewModel>(); }, o => true);
             
             //ShowMembersCommand = new ViewModelCommand(Members);
             //ShowDevicesCommand = new ViewModelCommand(Devices);
@@ -120,12 +122,12 @@ namespace Radar.ViewModels
 
             //ShowMessagesCommand = new ViewModelCommand(_ => CurrentView = messagesViewModel);
 
-          
-                //CurrentView = new DashboardView();
 
-            Task.Run(() => ShowRadarView());
+            //CurrentView = new DashboardView();
 
-            
+            NavigationService.NavigateTo<DashboardViewModel>();
+
+
         }
 
 

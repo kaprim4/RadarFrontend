@@ -100,7 +100,7 @@
                                             <TextBlock Text="Members"/>
                                         </StackPanel>
                                     </Button>
-                                    <Button Margin="0 0" Style="{StaticResource menuButton}" Command="{Binding ShowDevicesCommand}">
+                                    <Button Margin="0 0" Style="{StaticResource menuButton}" Command="{Binding ShowSettingCommand}">
                                         <StackPanel Orientation="Horizontal">
                                             <icon:PackIconMaterial Kind="TestTube" Style="{StaticResource menuButtonIcon}"/>
                                             <TextBlock Text="Paramètre"/>

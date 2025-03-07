@@ -1,6 +1,7 @@
 
 using ApiService;
 using Domain.DTO;
+using Domain.Models;
 using FileProcessor;
 using Microsoft.Extensions.Configuration;
 using NLog;
@@ -10,6 +11,7 @@ using System.Diagnostics;
 internal class Program
 {
     public static string InputDirectory;
+   
     public static string OutputDirectory;
     public static string TreatedDirectory;
     public static string RejectedDirectory;
@@ -18,6 +20,14 @@ internal class Program
     public static ILogger log = LogManager.Setup()
         .LoadConfigurationFromFile("nlog.config")
         .GetCurrentClassLogger();
+    public static string _derectoryByDate
+    {
+        get
+        {
+            var dateNow = DateTime.Now;
+            return Path.Combine(dateNow.Year.ToString(), dateNow.Month.ToString("00"), dateNow.Date.Day.ToString("00"));
+        }
+    }
 
     private static void Main(string[] args)
     {
@@ -27,20 +37,15 @@ internal class Program
         .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
         IConfiguration config = builder.Build();
-
-        InputDirectory = config["AppSettings:InPutDirectory"];
-        OutputDirectory = config["AppSettings:OutPutDirectory"];
-        TreatedDirectory = config["AppSettings:TreatedDirectory"];
-        RejectedDirectory = config["AppSettings:RejectedDirectory"];
-        LogDirectory = config["AppSettings:LogDirectory"];
         APIUrl = config["AppSettings:API"];
+        Task.WaitAll(LoadConfig(config));
 
         // Modifier la configuration après
         var logConfig = LogManager.Configuration;
         var fileTarget = logConfig.AllTargets.FirstOrDefault(t => t is FileTarget) as FileTarget;
         if (fileTarget != null)
         {
-            fileTarget.FileName = LogDirectory + "/${date:format=yyyy-MM-dd}.log";
+            fileTarget.FileName = Path.Combine(LogDirectory ,_derectoryByDate) + "/${date:format=yyyy-MM-dd}.log";
             LogManager.Configuration = logConfig;
             LogManager.ReconfigExistingLoggers();
         }
@@ -49,6 +54,8 @@ internal class Program
         log.Info($"[PARAM] | TREATED PATH: {TreatedDirectory}");
         log.Info($"[PARAM] | REJECTED PATH: {RejectedDirectory}");
         log.Info($"[PARAM] | LOG PATH: {LogDirectory}");
+
+
         if (!string.IsNullOrWhiteSpace(InputDirectory) && !string.IsNullOrWhiteSpace(OutputDirectory))
         {
             log.Info("[RUN] | Application starts...");
@@ -68,10 +75,7 @@ internal class Program
                 log.Info("[SEARCH] | File(s) detected: " + string.Join(", ", files));
                 foreach (var file in files)
                 {
-                    //Task.Run(() => ProcessFile(file)).ContinueWith(task =>
-                    //{
-                    //    task.Dispose();
-                    //});
+                    
                     await ProcessFile(file);
                 }
             }
@@ -95,18 +99,16 @@ internal class Program
                 {
                     log.Warn($"[PROCESS] | The file {Path.GetFileName(file)} is already  treated.");
                     log.Info($"[PROCESS] | The file {Path.GetFileName(file)} was moved to 'REJECTED FOLDER'");
-                    //Task.Run(() => Move(file, true)).ContinueWith(task =>
-                    //{
-                    //    task.Dispose();
-                    //});
-                    await Move(file, true);
+                    string device = JmxProcessor.GetDevice(file);
+                    await Move(file, true, device);
                 }
                 else
                 {
                     log.Info("[PROCESS] | Start moving the file: " + Path.GetFileName(file));
                     try
                     {
-                        var jmx = await JmxProcessor.DoWork(new string[] { file }, OutputDirectory);
+                        string _outPutDirectory = Path.Combine(OutputDirectory, _derectoryByDate);
+                        var jmx = await JmxProcessor.DoWork(new string[] { file }, _outPutDirectory);
                         log.Info($"[PROCESS] | Images and XML file for {Path.GetFileName(file)} has been exported successfully.");
                         var lot = new Lot
                         {
@@ -135,7 +137,7 @@ internal class Program
                         //{
                         //    task.Dispose();
                         //});
-                        await Move(file, false);
+                        await Move(file, false, jmx.FirstOrDefault()?.DeploymentSummary.CameraName);
                     }
                     catch (Exception ex)
                     {
@@ -155,23 +157,72 @@ internal class Program
     }
 
 
-    public static async Task Move(string file, bool isFailure)
+    public static async Task Move(string file, bool isFailure, string cameraName = "")
     {
         if (isFailure)
         {
-            if (!Directory.Exists(RejectedDirectory))
+            string _rejected = Path.Combine(RejectedDirectory, _derectoryByDate, cameraName);
+            if (!Directory.Exists(_rejected))
             {
-                Directory.CreateDirectory(RejectedDirectory);
+                Directory.CreateDirectory(_rejected);
             }
-            System.IO.File.Move(file, Path.Combine(RejectedDirectory, Path.GetFileName(file)));
+            System.IO.File.Move(file, Path.Combine(_rejected, Path.GetFileName(file)));
         }
         else
         {
-            if (!Directory.Exists(TreatedDirectory))
+            string treated = Path.Combine(TreatedDirectory, _derectoryByDate, cameraName);
+            if (!Directory.Exists(treated))
             {
-                Directory.CreateDirectory(TreatedDirectory);
+                Directory.CreateDirectory(treated);
             }
-            System.IO.File.Move(file, Path.Combine(TreatedDirectory, Path.GetFileName(file)));
+            System.IO.File.Move(file, Path.Combine(treated, Path.GetFileName(file)));
+        }
+    }
+
+    public static async Task LoadConfig(IConfiguration config)
+    {
+        IProcess<SettingDTO> _process = new("setting", APIUrl);
+        
+        var data = await _process.ProcessAsync(null, RequestType.Get, EndPoint.List);
+        if (data != null && (data.Pagable?.Content?.Any() ?? false))
+        {
+            var input = data.Pagable?.Content.FirstOrDefault(x => x.Name == nameof(InputDirectory));
+            if (input != null)
+            {
+                InputDirectory = input.Value;
+            }
+
+            var output = data.Pagable?.Content.FirstOrDefault(x => x.Name == nameof(OutputDirectory));
+            if (output != null)
+            {
+                OutputDirectory = output.Value;
+            }
+
+            var treated = data.Pagable?.Content.FirstOrDefault(x => x.Name == nameof(TreatedDirectory));
+            if (treated != null)
+            {
+                TreatedDirectory = treated.Value;
+            }
+
+            var reject = data.Pagable?.Content.FirstOrDefault(x => x.Name == nameof(RejectedDirectory));
+            if (reject != null)
+            {
+                RejectedDirectory = reject.Value;
+            }
+
+            var log = data.Pagable?.Content.FirstOrDefault(x => x.Name == nameof(LogDirectory));
+            if (log != null)
+            {
+                LogDirectory = log.Value;
+            }
+        }
+        else
+        {
+            InputDirectory = config["AppSettings:InPutDirectory"];
+            OutputDirectory = config["AppSettings:OutPutDirectory"];
+            TreatedDirectory = config["AppSettings:TreatedDirectory"];
+            RejectedDirectory = config["AppSettings:RejectedDirectory"];
+            LogDirectory = config["AppSettings:LogDirectory"];
         }
     }
 }

@@ -147,7 +147,7 @@ namespace Radar.ViewModels
                 try
                 {
                     deploymentData = await Task.Run(() =>
-                        JmxProcessor.DoWork(Files.Select(x => x.Name).ToArray()));
+                        JmxProcessor.DoWork(Files.Select(x => x.Name).ToArray(), ""));
                 }
                 catch (DivideByZeroException)
                 {
